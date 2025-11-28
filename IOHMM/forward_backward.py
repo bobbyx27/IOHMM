@@ -43,7 +43,7 @@ def forward_backward(log_prob_initial, log_prob_transition, log_Ey, log_state={}
     log_state: dict(int -> array-like of shape (k, ))
         timestamp i is a key of log_state if we know the state of that timestamp.
         Mostly used in semi-supervised and supervised IOHMM.
-        log_state[t][i] is 0 and log_state[t][~i] is -np.Infinity
+        log_state[t][i] is 0 and log_state[t][~i] is -np.inf
         if we know the state is i at timestamp t.
     Returns
     -------
@@ -81,7 +81,7 @@ def forward(log_prob_initial, log_prob_transition, log_Ey, log_state={}):
     log_state: dict(int -> array-like of shape (k, ))
         timestamp i is a key of log_state if we know the state of that timestamp.
         Mostly used in semi-supervised and supervised IOHMM.
-        log_state[t][i] is 0 and log_state[t][~i] is -np.Infinity
+        log_state[t][i] is 0 and log_state[t][~i] is -np.inf
         if we know the state is i at timestamp t.
     Returns
     -------
@@ -124,7 +124,7 @@ def backward(log_prob_transition, log_Ey, log_state={}):
     log_state: dict(int -> array-like of shape (k, ))
         timestamp i is a key of log_state if we know the state of that timestamp.
         Mostly used in semi-supervised and supervised IOHMM.
-        log_state[t][i] is 0 and log_state[t][~i] is -np.Infinity
+        log_state[t][i] is 0 and log_state[t][~i] is -np.inf
         if we know the state is i at timestamp t.
     Returns
     -------
@@ -178,7 +178,7 @@ def cal_log_gamma(log_alpha, log_beta, log_likelihood, log_state={}):
     log_state: dict(int -> array-like of shape (k, ))
         timestamp i is a key of log_state if we know the state of that timestamp.
         Mostly used in semi-supervised and supervised IOHMM.
-        log_state[t][i] is 0 and log_state[t][~i] is -np.Infinity
+        log_state[t][i] is 0 and log_state[t][~i] is -np.inf
         if we know the state is i at timestamp t.
     Returns
     -------
@@ -216,7 +216,7 @@ def cal_log_epsilon(log_prob_transition, log_Ey, log_alpha, log_beta, log_likeli
     log_state: dict(int -> array-like of shape (k, ))
         timestamp i is a key of log_state if we know the state of that timestamp.
         Mostly used in semi-supervised and supervised IOHMM.
-        log_state[t][i] is 0 and log_state[t][~i] is -np.Infinity
+        log_state[t][i] is 0 and log_state[t][~i] is -np.inf
         if we know the state is i at timestamp t.
     Returns
     -------

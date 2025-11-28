@@ -476,7 +476,7 @@ class GLM(BaseModel):
         if self.dispersion > EPS:
             return self.family.loglike_obs(endog, mu, scale=self.dispersion)
         log_p = np.zeros(endog.shape[0])
-        log_p[~np.isclose(endog, mu)] = - np.Infinity
+        log_p[~np.isclose(endog, mu)] = - np.inf
         return log_p
 
     def to_json(self, path):
@@ -718,7 +718,7 @@ class OLS(BaseModel):
         log_p = np.zeros(Y.shape[0])
         log_p[~np.isclose(
             np.linalg.norm(
-                Y[:, zero_inds] - mu[:, zero_inds], axis=1), 0)] = - np.Infinity
+                Y[:, zero_inds] - mu[:, zero_inds], axis=1), 0)] = - np.inf
         non_zero_inds = np.setdiff1d(
             np.arange(Y.shape[1]), zero_inds, assume_unique=True)
         dispersion = self.dispersion[np.ix_(non_zero_inds, non_zero_inds)]
@@ -1011,7 +1011,7 @@ class BaseMNL(BaseModel):
         assert X.shape[0] == Y.shape[0]
         assert Y.shape[1] == self.n_classes
         log_p = np.sum(self.predict_log_proba(X) * Y, axis=1)
-        log_p[np.sum(Y, axis=1) < EPS] = -np.Infinity
+        log_p[np.sum(Y, axis=1) < EPS] = -np.inf
         return log_p
 
     @classmethod

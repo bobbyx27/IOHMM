@@ -38,7 +38,7 @@ class DiscreteMNLUnaryTests(unittest.TestCase):
         np.testing.assert_array_equal(
             self.model.loglike_per_sample(self.data_spector.exog,
                                           np.array(['bar'] * 16 + ['foo'] * 16)),
-            np.array([-np.Infinity] * 16 + [0] * 16))
+            np.array([-np.inf] * 16 + [0] * 16))
 
     def test_lr_sample_weight_all_half(self):
         self.model = DiscreteMNL(
@@ -74,7 +74,7 @@ class DiscreteMNLUnaryTests(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :], np.array(['foo', 'bar'])),
-            np.array([0, -np.Infinity]), decimal=3)
+            np.array([0, -np.inf]), decimal=3)
 
 
 class DiscreteMNLBinaryTests(unittest.TestCase):
@@ -235,7 +235,7 @@ class DiscreteMNLBinaryTests(unittest.TestCase):
         print(self.model.classes, 'class')
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[3:5, :], np.array([0, 2])),
-            np.array([0, -np.Infinity]), decimal=3)
+            np.array([0, -np.inf]), decimal=3)
 
     def test_lr_multicolinearty(self):
         self.model_col = DiscreteMNL(
@@ -387,7 +387,7 @@ class DiscreteMNLMultinomialTests(unittest.TestCase):
             np.array([-4.2, -5.046, -2.827]), decimal=3)
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_anes96.exog[6:9, :], np.array([3, 0, 5])),
-            np.array([-4.2, -np.Infinity,  -np.Infinity]), decimal=3)
+            np.array([-4.2, -np.inf,  -np.inf]), decimal=3)
 
     def test_lr_multicolinearty(self):
         self.model_col = DiscreteMNL(

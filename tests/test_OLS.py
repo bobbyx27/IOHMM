@@ -256,7 +256,7 @@ class UnivariateOLSTests(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             np.array(self.data_longley.exog[0:1, :].tolist() * 6),
             np.array([60323, 0, 60323, 60322, 60322, 60323])),
-            np.array([0, -np.Infinity, 0, -np.Infinity, -np.Infinity, 0]), decimal=3)
+            np.array([0, -np.inf, 0, -np.inf, -np.inf, 0]), decimal=3)
 
     def test_ols_multicolinearty(self):
         self.model_col = OLS(
@@ -478,7 +478,7 @@ class IndependentMultivariateOLSTests(unittest.TestCase):
             np.array(self.X[0:1, :].tolist() * 6),
             np.array([self.Y[0, ], self.Y[1, ], self.Y[0, ],
                       self.Y[1, ], self.Y[1, ], self.Y[0, ]])),
-            np.array([0, -np.Infinity, 0, -np.Infinity, -np.Infinity, 0]), decimal=3)
+            np.array([0, -np.inf, 0, -np.inf, -np.inf, 0]), decimal=3)
 
     def test_ols_multicolinearty(self):
         self.model_col = OLS(
@@ -732,7 +732,7 @@ class PerfectCorrelationMultivariateOLSTests(unittest.TestCase):
             np.array(self.X[0:1, :].tolist() * 6),
             np.array([[60323, 60323], [0, 60323], [60323, 60323],
                       [60322, 60323], [60322, 60322], [60323, 60323]])),
-            np.array([0, -np.Infinity, 0, -np.Infinity, -np.Infinity, 0]), decimal=3)
+            np.array([0, -np.inf, 0, -np.inf, -np.inf, 0]), decimal=3)
 
     def test_ols_multicolinearty(self):
         self.model_col = OLS(

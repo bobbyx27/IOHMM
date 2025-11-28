@@ -226,16 +226,16 @@ class BaseIOHMM(object):
             df: The dataframe for a sequence, actually we only need its length.
             log_state: a dictionary (int -> array of shape (num_states, )).
                        The log_state[t] is the ground truth hidden state array of time stamp t.
-                       log_state[t][k] is 0 and log_state[t][~k] is -np.Infinity
+                       log_state[t][k] is 0 and log_state[t][~k] is -np.inf
                        if the hidden state of timestamp t is k.
             Returns:
             ----------
             log_gamma: array of shape (df.shape[0], num_states).
                        The posterior probability of each timestamp.
-                       log_gamma[t][k] is 0 and log_gamma[t][k] is -np.Infinity
+                       log_gamma[t][k] is 0 and log_gamma[t][k] is -np.inf
                        if the hidden state of timestamp t is k.
                        If at time stamp t there is no ground truth,
-                       log_gamma[t] will be all -np.Infinity.
+                       log_gamma[t] will be all -np.inf.
             """
             log_gamma = np.log(np.zeros((df.shape[0], self.num_states)))
             for time_stamp in log_state:
@@ -251,17 +251,17 @@ class BaseIOHMM(object):
             df: The dataframe for a sequence, actually we only need its length.
             log_state: a dictionary (int -> array of shape (num_states, )).
                        The log_state[i] is the ground truth hidden state array of time stamp i.
-                       log_state[i][k] is 0 and log_state[i][~k] is -np.Infinity
+                       log_state[i][k] is 0 and log_state[i][~k] is -np.inf
                        if the hidden state of timestamp i is k.
             Returns:
             ----------
             log_epsilon: array of shape (df.shape[0] - 1, num_states, num_states).
                          The posterior joint probability of two consecutive points.
-                         log_epsilon[t][k][j] is 0 and log_epsilon[t][~k][~j] is -np.Infinity
+                         log_epsilon[t][k][j] is 0 and log_epsilon[t][~k][~j] is -np.inf
                          if the hidden state of timestamp t is k and
                          hidden state of timestamp t+1 is j.
                          If at time stamp t or t+1 there is no ground truth,
-                         log_epsilon[t] will be all -np.Infinity.
+                         log_epsilon[t] will be all -np.inf.
 
             """
             log_epsilon = np.log(np.zeros((df.shape[0] - 1, self.num_states, self.num_states)))
@@ -291,8 +291,8 @@ class BaseIOHMM(object):
                         le[:, st, :] = np.random.rand(le.shape[0], self.num_states)
 
         # initialize log_likelihood
-        self.log_likelihoods = [-np.Infinity for _ in range(self.num_seqs)]
-        self.log_likelihood = -np.Infinity
+        self.log_likelihoods = [-np.inf for _ in range(self.num_seqs)]
+        self.log_likelihood = -np.inf
 
         # initialize input/output covariates
         self.inp_initials = [np.array(df[self.covariates_initial].iloc[0]).reshape(

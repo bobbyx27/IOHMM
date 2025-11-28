@@ -61,7 +61,7 @@ class CrossEntropyMNLUnaryTests(unittest.TestCase):
         np.testing.assert_array_equal(
             self.model.loglike_per_sample(self.data_spector.exog,
                                           np.array([1] * 16 + [0] * 16).reshape(-1, 1)),
-            np.array([0] * 16 + [-np.Infinity] * 16))
+            np.array([0] * 16 + [-np.inf] * 16))
 
     def test_lr_sample_weight_all_half(self):
         self.model = CrossEntropyMNL(
@@ -93,7 +93,7 @@ class CrossEntropyMNLUnaryTests(unittest.TestCase):
         # loglike_per_sample
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :], np.array([1, 0]).reshape(-1, 1)),
-            np.array([0, -np.Infinity]), decimal=3)
+            np.array([0, -np.inf]), decimal=3)
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :], np.array([1, 1]).reshape(-1, 1)),
             np.array([0, 0]), decimal=3)
@@ -320,11 +320,11 @@ class CrossEntropyMNLBinaryTests(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :],
             np.array([[0, 0], [1, 0]])),
-            np.array([-np.Infinity, -0.661]), decimal=3)
+            np.array([-np.inf, -0.661]), decimal=3)
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :],
             np.array([[0, 0], [0, 1]])),
-            np.array([-np.Infinity, -0.726]), decimal=3)
+            np.array([-np.inf, -0.726]), decimal=3)
 
     def test_lr_disturbed_two_data_point(self):
         # with regularization
@@ -344,11 +344,11 @@ class CrossEntropyMNLBinaryTests(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :],
             np.array([[0, 0], [0.99, 0.01]])),
-            np.array([-np.Infinity, -0.662]), decimal=3)
+            np.array([-np.inf, -0.662]), decimal=3)
         np.testing.assert_array_almost_equal(self.model.loglike_per_sample(
             self.data_spector.exog[4:6, :],
             np.array([[0, 0], [0.01, 0.99]])),
-            np.array([-np.Infinity, -0.725]), decimal=3)
+            np.array([-np.inf, -0.725]), decimal=3)
 
     def test_lr_multicolinearty(self):
         self.model_col = CrossEntropyMNL(
