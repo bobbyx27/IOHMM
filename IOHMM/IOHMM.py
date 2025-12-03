@@ -31,13 +31,12 @@ import logging
 import os
 import warnings
 
-
 import numpy as np
-
 
 from .forward_backward import forward_backward
 from .linear_models import (GLM, OLS, DiscreteMNL, CrossEntropyMNL)
-
+from .utils import create_logger
+logger = create_logger(logging.INFO)
 
 warnings.simplefilter("ignore")
 np.random.seed(0)
@@ -71,6 +70,11 @@ class BaseIOHMM(object):
         """
         self.num_states = num_states
         self.trained = False
+        self.log_likelihood_hist_ = None
+
+    @property
+    def log_likelihood_hist(self):
+        return self.log_likelihood_hist_
 
     def set_models(self, model_emissions,
                    model_initial=CrossEntropyMNL(),
@@ -398,11 +402,16 @@ class BaseIOHMM(object):
         For SupervisedIOHMM, max_EM_iter is 1, thus will only go through one iteration of EM step,
         which means that it will only use the ground truth hidden states to train.
         """
+        self.log_likelihood_hist_ = []
         for it in range(self.max_EM_iter):
+            logger.info(f"Iteration: {it}")
             log_likelihood_prev = self.log_likelihood
+            self.log_likelihood_hist_.append(log_likelihood_prev)
+            logger.info("M step")
             self.M_step()
+            logger.info("E step")
             self.E_step()
-            logging.info('log likelihood of iteration {0}: {1:.4f}'.format(it, self.log_likelihood))
+            logger.info('log likelihood of iteration {0}: {1:.4f}'.format(it, self.log_likelihood))
             if abs(self.log_likelihood - log_likelihood_prev) < self.EM_tol:
                 break
         self.trained = True
