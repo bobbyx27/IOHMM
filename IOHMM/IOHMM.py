@@ -32,6 +32,7 @@ import os
 import warnings
 
 import numpy as np
+import pandas as pd
 
 from .forward_backward import forward_backward
 from .linear_models import (GLM, OLS, DiscreteMNL, CrossEntropyMNL)
@@ -70,11 +71,17 @@ class BaseIOHMM(object):
         """
         self.num_states = num_states
         self.trained = False
-        self.log_likelihood_hist_ = None
+        self.log_likelihood_hist_ = []
 
     @property
     def log_likelihood_hist(self):
-        return self.log_likelihood_hist_
+        loglik = pd.Series(self.log_likelihood_hist_, name="loglik")
+        loglik.index.name = "iteration"
+        return loglik
+
+    @log_likelihood_hist.setter
+    def log_likelihood_hist(self, value: pd.Series):
+        self.log_likelihood_hist_ = value.values.tolist()
 
     def set_models(self, model_emissions,
                    model_initial=CrossEntropyMNL(),
@@ -394,7 +401,7 @@ class BaseIOHMM(object):
                 sample_weight = np.exp(np.hstack([lg[:, st] for lg in self.log_gammas]))
                 self.model_emissions[st][emis].fit(X, Y, sample_weight=sample_weight)
 
-    def train(self):
+    def train(self, EM_tol=None, max_EM_iter=None):
         """
         The ieratioin of EM step,
         Notes:
@@ -402,7 +409,8 @@ class BaseIOHMM(object):
         For SupervisedIOHMM, max_EM_iter is 1, thus will only go through one iteration of EM step,
         which means that it will only use the ground truth hidden states to train.
         """
-        self.log_likelihood_hist_ = []
+        self.EM_tol = EM_tol if EM_tol is not None else self.EM_tol
+        self.max_EM_iter = max_EM_iter if max_EM_iter is not None else self.max_EM_iter
         for it in range(self.max_EM_iter):
             logger.info(f"Iteration: {it}")
             log_likelihood_prev = self.log_likelihood
@@ -569,7 +577,7 @@ class UnSupervisedIOHMM(BaseIOHMM):
     This model is intended to be used when no ground truth hidden states are available.
     """
 
-    def __init__(self, num_states=2, EM_tol=1e-4, max_EM_iter=100):
+    def __init__(self, num_states=2):
         """
         Constructor
         Parameters
@@ -580,8 +588,8 @@ class UnSupervisedIOHMM(BaseIOHMM):
         -------
         """
         super(UnSupervisedIOHMM, self).__init__(num_states=num_states)
-        self.EM_tol = EM_tol
-        self.max_EM_iter = max_EM_iter
+        self.EM_tol = None
+        self.max_EM_iter = None
 
     def set_data(self, dfs):
         """
@@ -669,9 +677,7 @@ class UnSupervisedIOHMM(BaseIOHMM):
         -------
         IOHMM object: an IOHMM object specified by the json_dict and other arguments
         """
-        model = cls(num_states=num_states,
-                    EM_tol=json_dict['properties']['EM_tol'],
-                    max_EM_iter=json_dict['properties']['max_EM_iter'])
+        model = cls(num_states=num_states)
         model.set_models(
             model_initial=model_initial,
             model_transition=model_transition,
