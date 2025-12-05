@@ -136,7 +136,7 @@ v# Misc data files
 # used for vscode nosetest debugging
 nose_stub.py
 .noseids
-
+.idea/
 # Emacs
 *~
 
