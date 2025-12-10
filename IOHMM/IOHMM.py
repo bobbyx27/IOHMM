@@ -328,6 +328,24 @@ class BaseIOHMM(object):
                                                        seq in self.out_emissions]) for
                                             emis in range(self.num_emissions)]
 
+    def predict_transition_proba(self):
+        """
+        Utility method to derive transition probabilities for all states, timestamps and sequences.
+
+        Reproduce the loop over sequences as in .E_step, without processing
+        all E_step computations while returning transition probabilities
+        """
+        prob_transitions = []
+        for seq in range(self.num_seqs):
+            n_records = self.dfs_logStates[seq][0].shape[0]
+            log_prob_transition = np.zeros((n_records - 1, self.num_states, self.num_states))
+            for st in range(self.num_states):
+                log_prob_transition[:, st, :] = self.model_transition[st].predict_log_proba(
+                    self.inp_transitions[seq])
+            assert log_prob_transition.shape == (n_records - 1, self.num_states, self.num_states)
+            prob_transitions.append(np.exp(log_prob_transition))
+        return prob_transitions
+
     def E_step(self):
         """
         The Expectation step, Update
