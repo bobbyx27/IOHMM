@@ -1,6 +1,7 @@
 from .IOHMM import (UnSupervisedIOHMM,
                     SemiSupervisedIOHMM,
-                    SupervisedIOHMM)
+                    SupervisedIOHMM,
+                    create_logger)
 from .forward_backward import (forward_backward,
                                forward,
                                backward,
