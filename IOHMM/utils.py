@@ -1,4 +1,13 @@
-import logging
+"""
+Those are model utilities.
+
+Could be integrated as IOHMM classes methods,
+but may not be generic enough (1 sequence, univariate emissions hypothesis)
+
+Thus, this module is expected to import from IOHMM, not the other way around.
+
+May be renamed
+"""
 
 import numpy as np
 import pandas as pd
@@ -6,19 +15,6 @@ import pandas as pd
 from IOHMM import UnSupervisedIOHMM
 
 SEED = 1
-
-
-def create_logger(logger_level=logging.INFO):
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logger_level)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S"
-    )
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-    return logger
 
 
 def get_posterior_proba(
