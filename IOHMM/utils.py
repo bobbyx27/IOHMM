@@ -63,11 +63,12 @@ def get_fitted_hidden_states(
     return fitted_hidden_states
 
 
-def get_fitted_values(
+def get_conditional_expectation_from_hidden_states(
     model: UnSupervisedIOHMM, hidden_states: pd.Series, data: pd.DataFrame = None
 ) -> pd.DataFrame:
     """
-    Get fitted values from a data sequence and fitted HMM model
+    Get conditional expectation predictions from a hidden states sequence
+    and exogenous input used to infer state-wise emissions conditional expectation
     """
     assert all(
         len(model.responses_emissions[emis]) == 1 for emis in range(model.num_emissions)
@@ -98,6 +99,22 @@ def get_fitted_values(
             )
 
     return pd.DataFrame(res)
+
+
+def get_fitted_values(
+    model: UnSupervisedIOHMM, data: pd.DataFrame = None
+) -> pd.DataFrame:
+    """
+    Fitted values are conditional expectation predictions derived from
+    the fitted hidden states sequence
+    """
+    fitted_hidden_states = get_fitted_hidden_states(model=model, data=data)
+    fitted_values = get_conditional_expectation_from_hidden_states(
+        model=model,
+        hidden_states=fitted_hidden_states,
+        data=data
+    )
+    return fitted_values
 
 
 def hidden_state_period_span(st: int, hidden_states: pd.Series):
@@ -156,8 +173,8 @@ def get_emissions_coef_df(model: UnSupervisedIOHMM) -> pd.DataFrame:
 
 def simulate_states_from_exogenous_input(
     model: UnSupervisedIOHMM,
-    state_ini: int,
     data: pd.DataFrame = None,
+    state_ini: int = 0,
     seed: int = SEED,
 ) -> pd.Series:
     """
@@ -189,3 +206,27 @@ def simulate_states_from_exogenous_input(
     return pd.Series(
         states, index=model.dfs_logStates[0][0].index, name="simulated_states"
     )  # assumes 1 sequence
+
+
+def simulate_conditional_expectation(
+    model: UnSupervisedIOHMM,
+    data: pd.DataFrame = None,
+    state_ini: int = 0,
+    seed: int = SEED,
+) -> pd.DataFrame:
+    """
+    Conditional expectation simulations are derived from
+    a simulated hidden states sequence
+    """
+    simulated_hidden_states = simulate_states_from_exogenous_input(
+        model=model,
+        data=data,
+        state_ini=state_ini,
+        seed=seed
+    )
+    fitted_values = get_conditional_expectation_from_hidden_states(
+        model=model,
+        hidden_states=simulated_hidden_states,
+        data=data
+    )
+    return fitted_values
