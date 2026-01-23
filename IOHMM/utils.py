@@ -25,11 +25,10 @@ def get_posterior_proba(
 
     If data is not provided that means it is assumed already set into model
     """
-    assert model.num_seqs == 1, "Assumes 1 sequence"
-
     # Set data if provided
     if data is not None:
         model.set_data([data])
+    assert model.num_seqs == 1, "Assumes 1 sequence"
 
     # 1 Expectation iteration from the EM (Baum-Welch) training algorithm allows you to
     # make a forward-backward pass and get back missing attributes from training
@@ -49,7 +48,7 @@ def get_fitted_hidden_states_from_post_proba(post_prob: pd.DataFrame) -> pd.Seri
     """
     Compute hidden states maximizing states posterior probabilities
     """
-    return post_prob.T.reset_index(drop=True).idxmax().rename("hidden_states")
+    return post_prob.T.reset_index(drop=True).idxmax().rename("fitted_hidden_states")
 
 
 def get_fitted_hidden_states(
@@ -73,7 +72,6 @@ def get_conditional_expectation_from_hidden_states(
     assert all(
         len(model.responses_emissions[emis]) == 1 for emis in range(model.num_emissions)
     ), "expecting univariate emissions output"
-    assert model.num_seqs == 1, "Assumes 1 sequence"
 
     # Set data if provided
     if data is not None:
@@ -81,6 +79,7 @@ def get_conditional_expectation_from_hidden_states(
             "data and hidden_states must share index"
         )
         model.set_data([data])
+    assert model.num_seqs == 1, "Assumes 1 sequence"
 
     # Collecting fitted values from emission models
     res = {}
@@ -184,13 +183,13 @@ def simulate_states_from_exogenous_input(
     In other words, it assumes next states inference to NOT rely on past process values,
     thus there is no not need for inter-linked emissions models simulation.
     """
-    assert model.num_seqs == 1, "Assumes 1 sequence"
     if seed is not None:
         np.random.seed(seed)
 
     # Set data if provided
     if data is not None:
         model.set_data([data])
+    assert model.num_seqs == 1, "Assumes 1 sequence"
 
     # Computing transition probabilities at once, for all (t, state_t_1, state_t)
     transition_proba = model.predict_transition_proba()[0]  # assumes 1 sequence
